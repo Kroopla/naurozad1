@@ -93,7 +93,6 @@ def load_model(filepath, input_size, hidden_size, num_classes):
 
     # Przełączenie modelu w tryb ewaluacji
     model.eval()
-
     return model
 
 
