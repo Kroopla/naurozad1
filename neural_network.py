@@ -5,18 +5,18 @@ import torch.optim as optim
 
 
 # Definicja modelu
-class SimpleNN(nn.Module):
-    def __init__(self, input_size, hidden_size, num_classes):
-        super(SimpleNN, self).__init__()
-        self.layer1 = nn.Linear(input_size, hidden_size)
-        self.relu = nn.ReLU()
-        self.layer2 = nn.Linear(hidden_size, num_classes)
-
-    def forward(self, x):
-        out = self.layer1(x)
-        out = self.relu(out)
-        out = self.layer2(out)
-        return out
+# class SimpleNN(nn.Module):
+#     def __init__(self, input_size, hidden_size, num_classes):
+#         super(SimpleNN, self).__init__()
+#         self.layer1 = nn.Linear(input_size, hidden_size)
+#         self.relu = nn.ReLU()
+#         self.layer2 = nn.Linear(hidden_size, num_classes)
+#
+#     def forward(self, x):
+#         out = self.layer1(x)
+#         out = self.relu(out)
+#         out = self.layer2(out)
+#         return out
 
 
 # def train_model(model, criterion, optimizer, x_train, y_train, num_epochs):
@@ -47,6 +47,8 @@ def train_model(x_train, y_train, epochs=5000, learning_rate=0.001):
 
     for epoch in range(epochs):
         for i in range(x_train.shape[0]):
+    # for i in range(x_train.shape[0]):
+    #     for epoch in range(epochs):
             # Obliczanie predykcji modelu
             logits = np.dot(weights, x_train[i]) + bias
             y_pred = np.exp(logits) / np.sum(np.exp(logits), axis=0)
@@ -71,29 +73,29 @@ def train_model(x_train, y_train, epochs=5000, learning_rate=0.001):
         with open("bias.txt", "w") as file:
             file.write(np.array2string(bias))
 
-    print(weights, bias)
+    print(f"Weights: {weights} \n bias: {bias}")
 
 
-def test_model(model, input, threshold=0.3):
-    with torch.no_grad():
-        input = input.unsqueeze(0)  # Dodajemy dodatkowy wymiar dla pojedynczej próbki
-        output = model(input)
-        probabilities = torch.softmax(output, dim=1)
-        print(probabilities)
-        classes = (probabilities > threshold).nonzero(as_tuple=True)[1]  # Znajdowanie klas przekraczających próg
-        return classes.tolist()
+# def test_model(model, input, threshold=0.9):
+#     with torch.no_grad():
+#         input = input.unsqueeze(0)  # Dodajemy dodatkowy wymiar dla pojedynczej próbki
+#         output = model(input)
+#         probabilities = torch.softmax(output, dim=1)
+#         print(probabilities)
+#         classes = (probabilities > threshold).nonzero(as_tuple=True)[1]  # Znajdowanie klas przekraczających próg
+#         return classes.tolist()
 
 
-def load_model(filepath, input_size, hidden_size, num_classes):
-    # Tworzenie instancji modelu z tymi samymi parametrami, które były używane podczas treningu
-    model = SimpleNN(input_size, hidden_size, num_classes)
-
-    # Ładowanie stanu modelu (parametrów) z pliku
-    model.load_state_dict(torch.load(filepath))
-
-    # Przełączenie modelu w tryb ewaluacji
-    model.eval()
-    return model
+# def load_model(filepath, input_size, hidden_size, num_classes):
+#     # Tworzenie instancji modelu z tymi samymi parametrami, które były używane podczas treningu
+#     model = SimpleNN(input_size, hidden_size, num_classes)
+#
+#     # Ładowanie stanu modelu (parametrów) z pliku
+#     model.load_state_dict(torch.load(filepath))
+#
+#     # Przełączenie modelu w tryb ewaluacji
+#     model.eval()
+#     return model
 
 
 def predict(X, weights, bias):
@@ -102,7 +104,7 @@ def predict(X, weights, bias):
     predicted_labels = []
 
     for label in range(0, len(scores)):
-        if scores[label] >= 2.3:
+        if scores[label] >= 2.5:
             predicted_labels.append(label)
     if len(predicted_labels) == 0:
         predicted_labels = np.argmax(scores)
@@ -115,7 +117,6 @@ def load_weights():
         content = file.read()
 
     content = content.replace('[', '').replace(']', '').replace('\n', ' ')
-
     weights = np.fromstring(content, sep=' ')
     weights = weights.reshape((10, 35))
 
@@ -127,7 +128,6 @@ def load_biases():
         lines = file.readlines()
 
     formatted_bias = ''.join(lines).replace('[', '').replace(']', '')
-
     bias = np.fromstring(formatted_bias, sep=' ')
 
     return bias
@@ -135,9 +135,9 @@ def load_biases():
 
 def trening():
     # Trenowanie modelu
-    model = SimpleNN(35, 10, 10)
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    # model = SimpleNN(35, 10, 10)
+    # criterion = nn.CrossEntropyLoss()
+    # optimizer = optim.Adam(model.parameters(), lr=0.001)
     x_train = np.array([
         # 0
         [1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1],
